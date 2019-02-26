@@ -1,0 +1,174 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0",
+    "title": "MapMyWorld Data API documentation",
+    "description": "This is a documentation for **MapMyWorld Data** API written with [Swagger Editor](http: //editor.swagger.io). </br>**MapMyWorld Data** is an API which provides and regroups several geo-data.",
+    "contact": {
+      "email": "yannick.legoff@sogeti.com"
+    }
+  },
+  "externalDocs": {
+    "description": "Find more info here",
+    "url": "https://git.innovation-factory.io/innovative-projects/mmw.git"
+  },
+  "host": "localhost:8080",
+  "basePath": "/api/",
+  "tags": [
+    {
+      "name": "data",
+      "description": "Every way to get data"
+    }
+  ],
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/getAllDataByYear/{year}": {
+      "get": {
+        "description": "Get all families we have in our database (forest, river, mountain, ...) by year",
+        "tags": [
+          "data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "year",
+            "in": "path",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Data"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Request is Incorrect"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": []
+      }
+    },
+    "/getDataByYearAndFamilies/{year}/{families}": {
+      "get": {
+        "description": "Get all polygons with a specific family (forest, river, mountain, ...)",
+        "tags": [
+          "data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "year",
+            "in": "path",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "families",
+            "in": "path",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Data"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Request is Incorrect"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": []
+      }
+    }
+  },
+  "definitions": {
+    "Data": {
+      "type": "object",
+      "description": "A Multipolygon represents an area of a forest, river,...",
+      "required": [
+        "family",
+        "type",
+        "properties",
+        "geometry"
+      ],
+      "properties": {
+        "family": {
+          "type": "number",
+          "example": "1, 2, ..."
+        },
+        "type": {
+          "type": "string",
+          "example": "forest, river, ..."
+        },
+        "properties": {
+          "$ref": "#/definitions/Properties"
+        },
+        "geometry": {
+          "$ref": "#/definitions/Geometry"
+        }
+      }
+    },
+    "Properties": {
+      "type": "object",
+      "description": "We can put here everything we want and could be useful. Country, Factors for the IA, ..."
+    },
+    "Geometry": {
+      "type": "object",
+      "description": "It's all the coordinates for the polygons",
+      "required": [
+        "type",
+        "coordinates"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "example": "Multipolygon"
+        },
+        "coordinates": {
+          "description": "It's an array of an array of an array of coordinates (because of the multipolygons)",
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "description": "Represents a position [latitude, longitude]",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          }
+        }
+      }
+    }
+  }
+}
